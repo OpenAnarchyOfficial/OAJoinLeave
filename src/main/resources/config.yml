@@ -1,0 +1,6 @@
+toggle-connection-msgs-cmd: true
+messages:
+  connection-cmd-on: "&aConnection messages are now SHOWN"
+  connection-cmd-off: "&cConnection messages are now HIDDEN"
+  join-message: "&9%player% &7joined the server"
+  quit-message: "&9%player% &7has left the server"

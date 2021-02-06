@@ -1,0 +1,12 @@
+name: OAJoinLeave
+version: 1.0.0
+main: com.qbasty.oajoinleave.Main
+author: qbasty
+api-version: 1.12
+prefix: OAJoinLeave
+description: Join and leave messages for openanarchy
+
+commands:
+  toggleconnectionmsgs:
+    description: Toggle join/leave message visibility.
+    aliases: ["tcm"]
