@@ -5,14 +5,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import java.util.HashMap;
-
 
 public class JoinLeave implements CommandExecutor {
-
-    public static HashMap<String, Boolean> toggled = new HashMap<>();
-
-    Main plugin;
+    private final Main plugin;
 
     public JoinLeave(Main plugin) {
         this.plugin = plugin;
@@ -20,24 +15,25 @@ public class JoinLeave implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(plugin.getConfig().getBoolean("toggle-connection-msgs-cmd")){
-            if(!(sender instanceof Player)){
+        if (plugin.getConfig().getBoolean("toggle-connection-msgs-cmd")) {
+            if (!(sender instanceof Player)) {
                 sender.sendMessage("The console can not toggle connection messages.");
                 return false;
             } else {
                 try {
                     Player p = (Player) sender;
                     String id = p.getUniqueId().toString();
-                    if(toggled.get(id)){
+                    if (plugin.getConfig().getBoolean("data." + id, true)) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.connection-cmd-off")));
-                        toggled.replace(id, false);
+                        plugin.getConfig().set("data." + id, false);
                     } else {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.connection-cmd-on")));
-                        toggled.replace(id, true);
+                        plugin.getConfig().set("data." + id, true);
                     }
+                    plugin.saveConfig();
                     return true;
                 } catch (Exception ex) {
-                    System.out.println(ex.toString());
+                    ex.printStackTrace();
                 }
             }
         }

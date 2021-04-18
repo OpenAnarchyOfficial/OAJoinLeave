@@ -9,35 +9,32 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ConnectionEvents implements Listener {
+    private final Main plugin;
 
-    Main plugin;
-
-    public ConnectionEvents(Main plugin){
+    public ConnectionEvents(Main plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e){
+    public void onJoin(PlayerJoinEvent e) {
         e.setJoinMessage(null);
-        Player p = e.getPlayer();
-        for(Player player : Bukkit.getOnlinePlayers()){
-            JoinLeave.toggled.putIfAbsent(player.getUniqueId().toString(), true);
-            if(JoinLeave.toggled.get(player.getUniqueId().toString())){
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (plugin.getConfig().getBoolean("data." + player.getUniqueId(), true)) {
                 try {
-                    String joinMsg = plugin.getConfig().getString("messages.join-message").replace("%player%", p.getName());
+                    String joinMsg = plugin.getConfig().getString("messages.join-message").replace("%player%", e.getPlayer().getName());
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', joinMsg));
                 } catch (Exception ex) {
-                    System.out.println(ex.toString());
+                    ex.printStackTrace();
                 }
             }
         }
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){
+    public void onQuit(PlayerQuitEvent e) {
         e.setQuitMessage(null);
-        for (Player player : Bukkit.getOnlinePlayers()){
-            if (JoinLeave.toggled.get(player.getUniqueId().toString())){
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (plugin.getConfig().getBoolean("data." + player.getUniqueId(), true)) {
                 String quitMsg = plugin.getConfig().getString("messages.quit-message").replace("%player%", e.getPlayer().getName());
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', quitMsg));
             }
